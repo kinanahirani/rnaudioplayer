@@ -1,9 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import Slider from '@react-native-community/slider';
-
 import TrackPlayer, {useProgress} from 'react-native-track-player';
-
 import Colors from '../components/Colors';
 
 const {width, height} = Dimensions.get('window');

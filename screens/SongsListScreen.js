@@ -3,9 +3,7 @@ import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import {ScrollView, FlatList} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import {toggleFavourite} from '../store/actions/songsActions';
-
 import {
   CLASSICS,
   DANCE,

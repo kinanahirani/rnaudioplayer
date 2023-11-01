@@ -213,4 +213,22 @@ export const SONGS = [
     'https://samplesongs.netlify.app/album-arts/without-me.jpg',
     'https://samplesongs.netlify.app/Without%20Me.mp3',
   ),
+  new Song(
+    '6',
+    '7',
+    'With Streaming',
+    'feat.kinana',
+    'https://samplesongs.netlify.app/album-arts/death-bed.jpg',
+    'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    'hls',
+    // 'https://res.cloudinary.com/dht1rd0lr/video/upload/v1600018774/song2_bxpoj6.mp3',
+  ),
+  new Song(
+    '7',
+    '7',
+    'With Local',
+    'feat.kinana',
+    'https://samplesongs.netlify.app/album-arts/solo.jpg',
+    require('../assets/music/music1.mp3')
+  ),
 ];

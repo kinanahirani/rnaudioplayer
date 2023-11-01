@@ -36,8 +36,6 @@ const SongsPlayScreen = props => {
   const route = useRoute();
   const sId = +route.params.sid;
   const gId = +route.params.gid;
-  console.log(gId, sId, 'gId, sId');
-  // const gId = navigation.getParam('gid');
   let arr = [{}];
   if (gId == '1') {
     arr = ROM;
