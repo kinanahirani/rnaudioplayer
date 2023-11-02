@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 // import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -16,9 +16,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from '../components/Colors';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 
-const Stack=createStackNavigator()
+const Stack = createStackNavigator();
 
 // const AllSongsNavigator = createStackNavigator(
 //   {
@@ -57,9 +57,12 @@ const Stack=createStackNavigator()
 // );
 
 const SongsNavigator = () => {
+  const [isPlayerInitialized, setIsPlayerInitialized] = useState(false);
+  const [currentPlayingSong, setCurrentPlayingSong] = useState();
+
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={'black'}/>
+      <StatusBar backgroundColor={'black'} />
       <Stack.Navigator>
         <Stack.Screen
           name="HomeScreen"
@@ -73,9 +76,18 @@ const SongsNavigator = () => {
         />
         <Stack.Screen
           name="SongsPlayScreen"
-          component={SongsPlayScreen}
-          options={{headerShown: false}}
-        />
+          // component={SongsPlayScreen}
+          options={{headerShown: false}}>
+          {props => (
+            <SongsPlayScreen
+              {...props}
+              setIsPlayerInitialized={setIsPlayerInitialized}
+              isPlayerInitialized={isPlayerInitialized}
+              setCurrentPlayingSong={setCurrentPlayingSong}
+              currentPlayingSong={currentPlayingSong}
+            />
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name="SearchScreen"
           component={SearchScreen}

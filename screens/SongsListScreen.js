@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import {ScrollView, FlatList} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
@@ -22,23 +22,21 @@ const {width, height} = Dimensions.get('window');
 const SongsListScreen = (props) => {
   const {navigation}=props
   const route=useRoute()
-  const gid = route.params.gid
-  // const gid = navigation.getParam('gid');//getting the genre passed as param
-
-  const displayedGenre = GENRES.find((genre) => genre.id === gid); //finding the genre by the id whose songs are going to be displayed
+  const gid = +route.params.gid
+  const displayedGenre = GENRES.find((genre) => genre.id == gid); //finding the genre by the id whose songs are going to be displayed
 
   let arr = [{}];
-  if (gid === '1') {
+  if (gid == '1') {
     arr = ROM;
-  } else if (gid === '2') {
+  } else if (gid == '2') {
     arr = SOOTHING;
-  } else if (gid === '3') {
+  } else if (gid == '3') {
     arr = ROCKON;
-  } else if (gid === '4') {
+  } else if (gid == '4') {
     arr = CLASSICS;
-  } else if (gid === '5') {
+  } else if (gid == '5') {
     arr = WORKOUT;
-  } else if (gid === '6') {
+  } else if (gid == '6') {
     arr = DANCE;
   }
 

@@ -13,7 +13,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {toggleFavourite} from '../store/actions/songsActions';
 import {useDispatch, useSelector} from 'react-redux';
 
-import TrackPlayer, {Capability} from 'react-native-track-player';
+import TrackPlayer, {
+  Capability,
+  useActiveTrack,
+  useProgress,
+} from 'react-native-track-player';
 
 import {
   ROM,
@@ -32,7 +36,14 @@ import {useRoute} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window');
 
 const SongsPlayScreen = props => {
-  const {navigation} = props;
+  const {
+    navigation,
+    isPlayerInitialized,
+    setIsPlayerInitialized,
+    currentPlayingSong,
+    setCurrentPlayingSong,
+  } = props;
+
   const route = useRoute();
   const sId = +route.params.sid;
   const gId = +route.params.gid;
@@ -62,18 +73,21 @@ const SongsPlayScreen = props => {
   const [songIndex, setSongIndex] = useState(0);
   const slider = useRef(null); // to not re-initialize it
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const activeTrack = useActiveTrack();
 
   useEffect(() => {
+    let index = 0;
     scrollX.addListener(({value}) => {
       console.log(value);
-      const index = Math.round(value / width); //get the index of the song
+      index = Math.round(value / width); //get the index of the song
       setSongIndex(index); //set the next song in queue
-      console.log(index);
+      console.log(index, '..songIndex');
     });
 
-    TrackPlayer.setupPlayer()
-      .then(() =>
-        TrackPlayer.updateOptions({
+    const setUpPlayer = async () => {
+      if (!isPlayerInitialized) {
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.updateOptions({
           // Media controls capabilities
           capabilities: [
             Capability.Play,
@@ -85,37 +99,55 @@ const SongsPlayScreen = props => {
           ],
 
           // Capabilities that will show up when the notification is in the compact form on Android
-          compactCapabilities: [Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious],
+          compactCapabilities: [
+            Capability.Play,
+            Capability.Pause,
+            Capability.SkipToNext,
+            Capability.SkipToPrevious,
+          ],
           // Icons for the notification on Android (if you don't like the default ones)
-        }),
-      )
-      .then(async () => {
+        });
+        setIsPlayerInitialized(true);
         console.log('Player ready');
         await TrackPlayer.add(displayedSongs);
-        TrackPlayer.skip(sId); //to start from the selected song
-        setIsPlayerReady(true);
+      }
+      if (displayedSongs[currentPlayingSong] && displayedSongs[currentPlayingSong].id == sId) {
         TrackPlayer.play();
-      });
+        console.log("insideeee");
+        // await TrackPlayer.skip(sId); //to start from the selected song
+      } else {
+        await TrackPlayer.skip(sId);
+        TrackPlayer.play();
+      }
+    };
+    setUpPlayer();
     return () => {
       scrollX.removeAllListeners();
+      // setCurrentPlayingSong(sId);
     }; //clean up function
   }, []); //because we want to attach the listener only once,
   //and set the trackPlayer only once not again and again
 
-  useEffect(() => {
-    if (isPlayerReady) {
-      TrackPlayer.skip(Number(displayedSongs[songIndex].id));
-    }
-  }, [songIndex]); //whenever scroll value changes hence songIndex changes then the songTrack
-  // will also skip to that id
+  useEffect(()=>{
+    setCurrentPlayingSong(songIndex)
+  },[songIndex])
+
+  // useEffect(() => {
+  //   if (isPlayerInitialized) {
+  //     TrackPlayer.skip(Number(displayedSongs[songIndex].id));
+  //   }
+  // }, [songIndex]); //whenever scroll value changes hence songIndex changes then the songTrack
+  // // will also skip to that id
 
   const goNext = () => {
+    TrackPlayer.skipToNext()
     slider.current.scrollToOffset({
       offset: (songIndex + 1) * width,
     }); //Flatlist will scroll to the next item in the queue, default parameter animated is always true
   };
 
   const goPrevious = () => {
+    TrackPlayer.skipToPrevious()
     slider.current.scrollToOffset({
       offset: (songIndex - 1) * width,
     }); //Flatlist will scroll to the previous item in the queue
